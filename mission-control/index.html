@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lanz3lot Mission Control // CYBERPUNK_V2.6</title>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #050505;
+            --cyan: #00f2ff;
+            --magenta: #ff00ff;
+            --blue: #0066ff;
+            --danger: #ff4d4d;
+            --success: #10b981;
+            --accent: #8b5cf6;
+            --warning: #f59e0b;
+            --text: #e0faff;
+            --card-bg: rgba(5, 15, 25, 0.75); 
+            --glass-blur: blur(12px);
+            --border-glow: 0 0 10px rgba(0, 242, 255, 0.4);
+        }
+
+        body { 
+            background: url('background.png') no-repeat center center fixed; 
+            background-size: cover;
+            color: var(--text); 
+            font-family: 'Share Tech Mono', monospace; 
+            padding: 40px; 
+            margin: 0; 
+            min-height: 100vh;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: -1;
+        }
+
+        .container { max-width: 1400px; margin: 0 auto; position: relative; }
+
+        .header { 
+            border-left: 4px solid var(--cyan); 
+            padding-left: 20px; 
+            margin-bottom: 40px;
+            text-shadow: 0 0 15px var(--cyan);
+        }
+        .title { font-size: 36px; font-weight: 800; letter-spacing: -1px; margin: 0; }
+        .subtitle { color: var(--cyan); font-size: 12px; letter-spacing: 2px; text-transform: uppercase; margin-top: 4px; opacity: 0.7; }
+        
+        .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; }
+
+        .panel {
+            background: var(--card-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid rgba(0, 242, 255, 0.3);
+            box-shadow: var(--border-glow), inset 0 0 20px rgba(0, 242, 255, 0.05);
+            padding: 24px;
+            border-radius: 8px;
+            position: relative;
+        }
+
+        .full-width { grid-column: span 3; border-color: rgba(16, 185, 129, 0.5); box-shadow: 0 0 15px rgba(16, 185, 129, 0.2); }
+
+        .section-label { 
+            color: var(--cyan); 
+            font-size: 14px; 
+            font-weight: 600; 
+            text-transform: uppercase; 
+            margin-bottom: 20px; 
+            display: block; 
+            letter-spacing: 2px;
+            border-bottom: 1px solid rgba(0, 242, 255, 0.2);
+            padding-bottom: 8px;
+        }
+
+        .list { list-style: none; padding: 0; margin: 0; max-height: 250px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--cyan) transparent; }
+        .list-item { 
+            padding: 12px 0; 
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1); 
+            display: flex; 
+            align-items: center; 
+            font-size: 14px; 
+            padding-right: 8px;
+            transition: all 0.3s ease;
+        }
+        .list-item:last-child { border: none; }
+
+        .list-item::before { 
+            content: ''; 
+            width: 10px; 
+            height: 10px; 
+            margin-right: 15px; 
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            background: var(--text);
+            flex-shrink: 0;
+        }
+
+        .cat-urgent { color: var(--danger); font-weight: 600; }
+        .cat-urgent::before { background: var(--danger); box-shadow: 0 0 8px var(--danger); }
+        .cat-wait { color: var(--accent); }
+        .cat-wait::before { background: var(--accent); box-shadow: 0 0 8px var(--accent); }
+        .cat-fun { color: var(--success); }
+        .cat-fun::before { background: var(--success); box-shadow: 0 0 8px var(--success); }
+
+        .todo-urgent::before { content: '🔴'; background: none; clip-path: none; width: auto; height: auto; font-size: 14px; }
+        .todo-wait::before { content: '🟣'; background: none; clip-path: none; width: auto; height: auto; font-size: 14px; }
+        .todo-fun::before { content: '🟢'; background: none; clip-path: none; width: auto; height: auto; font-size: 14px; }
+
+        .deadline { font-size: 11px; color: rgba(255, 255, 255, 0.5); margin-left: auto; }
+        .late-tag { 
+            color: var(--danger); 
+            font-size: 10px; 
+            font-weight: 800; 
+            text-transform: uppercase; 
+            margin-left: 8px; 
+            border: 1px solid var(--danger); 
+            padding: 2px 4px; 
+            border-radius: 4px; 
+            box-shadow: 0 0 5px var(--danger);
+        }
+
+        .checkbox { 
+            margin-left: auto; 
+            cursor: pointer; 
+            width: 20px; 
+            height: 20px; 
+            border: 1px solid var(--cyan); 
+            border-radius: 2px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            transition: all 0.2s; 
+            flex-shrink: 0;
+            background: rgba(0, 0, 0, 0.3);
+        }
+        .checkbox.checked { background: var(--cyan); box-shadow: 0 0 15px var(--cyan); }
+        .checkbox.checked::after { content: '✓'; color: #000; font-weight: 800; font-size: 14px; }
+
+        /* HUD & Progress */
+        .hud-container { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; gap: 15px; }
+        .spinning-orb {
+            width: 80px;
+            height: 80px;
+            border: 2px solid var(--cyan);
+            border-radius: 50%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.4);
+            font-size: 16px;
+            font-weight: bold;
+            animation: pulse 2s infinite ease-in-out;
+            background: rgba(0, 242, 255, 0.1);
+        }
+        .spinning-orb::after {
+            content: '';
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            border: 1px dashed var(--cyan);
+            border-radius: 50%;
+            animation: rotate 8s linear infinite;
+        }
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+
+        .progress-block { width: 100%; text-align: center; }
+        .progress-bar-bg { width: 100%; height: 12px; border: 1px solid var(--cyan); background: rgba(0, 242, 255, 0.1); margin-top: 10px; position: relative; padding: 2px; }
+        .progress-bar-fill { height: 100%; background: var(--cyan); box-shadow: 0 0 10px var(--cyan); position: relative; width: 0%; transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1); }
+        
+        /* Bottom Loading Bar */
+        .bottom-loading { grid-column: span 3; height: 2px; background: rgba(255, 255, 255, 0.1); margin-top: 20px; position: relative; overflow: hidden; }
+        .bottom-loading::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+            animation: slide 3s infinite linear;
+        }
+        @keyframes slide { to { left: 100%; } }
+
+        .footer { 
+            margin-top: 20px; 
+            padding-top: 24px; 
+            border-top: 1px solid rgba(0, 242, 255, 0.2); 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: flex-end; 
+        }
+        .legend { display: flex; gap: 16px; font-size: 11px; opacity: 0.9; background: rgba(0, 0, 0, 0.6); padding: 8px 16px; border: 1px solid rgba(0, 242, 255, 0.2); border-radius: 4px; backdrop-filter: blur(4px); }
+        .legend-item { display: flex; align-items: center; gap: 6px; }
+        .dot { width: 8px; height: 8px; border-radius: 50%; }
+
+        .completed { opacity: 0.3 !important; text-decoration: line-through; filter: grayscale(1); }
+        .night-duty { color: var(--warning); font-size: 12px; margin-top: 8px; font-weight: bold; text-transform: uppercase; }
+    </style>
+</head>
+<body onload="initDashboard()">
+    <div class="container">
+        <div class="header">
+            <div class="subtitle">SYS_OPERATOR: PRASANNAKALYAN // TERMINAL_ACTIVE</div>
+            <h1 class="title">LANZ3LOT // MISSION_CONTROL</h1>
+        </div>
+
+        <div class="grid">
+            <!-- TO DO TODAY -->
+            <div class="panel full-width">
+                <span class="section-label" style="color: var(--success);">ACTIVE_TASKS // UPDATED_2026_02_28_0000</span>
+                <ul class="list">
+                    <li class="list-item todo-urgent" id="task-demo-by-weekend">
+                        Demo by Weekend <span class="late-tag">LATE</span>
+                        <div class="checkbox" id="check-demo-by-weekend" onclick="toggleTask('task-demo-by-weekend', 'check-demo-by-weekend')"></div>
+                    </li>
+                    <li class="list-item todo-urgent" id="task-make-ppt-for-investors">
+                        Make PPT for Investors <span class="late-tag">LATE</span>
+                        <div class="checkbox" id="check-make-ppt-for-investors" onclick="toggleTask('task-make-ppt-for-investors', 'check-make-ppt-for-investors')"></div>
+                    </li>
+                    <li class="list-item todo-urgent" id="task-ai-api-control">
+                        AI API Control
+                        <div class="checkbox" id="check-ai-api-control" onclick="toggleTask('task-ai-api-control', 'check-ai-api-control')"></div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- PALLIDEX BACKLOG -->
+            <div class="panel">
+                <span class="section-label">PALLIDEX_BACKLOG // DATA_STREAM_A</span>
+                <ul class="list">
+                    <li class="list-item cat-urgent">Demo by Weekend</li>
+                    <li class="list-item cat-urgent">Make PPT for Investors</li>
+                    <li class="list-item cat-wait">All Hands Review <span class="deadline">Feb 26</span></li>
+                    <li class="list-item cat-wait">Achievement Doc <span class="deadline">Feb 27</span></li>
+                    <li class="list-item cat-wait">Bank Account <span class="deadline">Mar 05</span></li>
+                    <li class="list-item cat-wait">Website & Branding <span class="deadline">Mar 10</span></li>
+                </ul>
+            </div>
+
+            <!-- CLINICAL STATUS (CENTERED) -->
+            <div class="panel" style="border-color: var(--blue); box-shadow: 0 0 15px rgba(0, 102, 255, 0.3);">
+                <span class="section-label" style="color: var(--blue);">CLINICAL_ROTATION // HUB_SYNC</span>
+                <div class="hud-container">
+                    <div class="spinning-orb" id="rotation-orb">ENT</div>
+                    <div class="progress-block">
+                        <div style="font-size: 12px; color: var(--cyan); letter-spacing: 1px;" id="rotation-range">ROTATION PROGRESS: FEB 23 - MAR 08</div>
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar-fill" id="rotation-bar"></div>
+                        </div>
+                        <div style="font-size: 10px; color: var(--text-muted); margin-top: 5px;" id="rotation-stats">CALCULATING_SYSTEM_TIME...</div>
+                        <div class="night-duty">🌙 NEXT NIGHT: MAR 1 (SUN)</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PERSONAL BACKLOG -->
+            <div class="panel" style="border-color: var(--magenta); box-shadow: 0 0 10px rgba(255, 0, 255, 0.3);">
+                <span class="section-label" style="color: var(--magenta);">PERSONAL_ARCHIVE // DATA_STREAM_B</span>
+                <ul class="list">
+                    <li class="list-item cat-urgent">AI API Control</li>
+                    <li class="list-item cat-wait">Cron Jobs & Skills <span class="deadline">Feb 28</span></li>
+                    <li class="list-item cat-wait">Stock Market App <span class="deadline">Mar 15</span></li>
+                    <li class="list-item cat-wait">The Odin Project <span class="deadline">Ongoing</span></li>
+                    <li class="list-item cat-wait">Set up LinkedIn <span class="deadline">TBD</span></li>
+                    <li class="list-item cat-fun">Dashboard Updates</li>
+                    <li class="list-item cat-fun">Studying App</li>
+                </ul>
+            </div>
+
+            <!-- BOTTOM LOADING BAR -->
+            <div class="bottom-loading"></div>
+        </div>
+
+        <div class="footer">
+            <div>
+                <div class="legend">
+                    <div class="legend-item"><div class="dot" style="background: var(--danger);"></div> URGENT</div>
+                    <div class="legend-item"><div class="dot" style="background: var(--accent);"></div> WAIT</div>
+                    <div class="legend-item"><div class="dot" style="background: var(--success);"></div> FUN</div>
+                </div>
+                <div style="color: var(--success); font-size: 12px; margin-top: 8px;">[●] SYSTEM_ONLINE // LANZ3LOT_v2.6</div>
+            </div>
+            <div style="font-size: 11px; color: var(--cyan); opacity: 0.5;">NODE_CONNECTED: PRASANNAKALYAN_LAPTOP</div>
+        </div>
+    </div>
+
+    <script>
+        function toggleTask(id, checkId) {
+            const item = document.getElementById(id);
+            const cb = document.getElementById(checkId);
+            cb.classList.toggle('checked');
+            
+            if (cb.classList.contains('checked')) {
+                item.classList.add('completed');
+                localStorage.setItem(id, 'done');
+            } else {
+                item.classList.remove('completed');
+                localStorage.removeItem(id);
+            }
+        }
+
+        function initDashboard() {
+            // Load completion states
+            const currentTasks = ['task-demo-by-weekend', 'task-make-ppt-for-investors', 'task-all-hands-review-meeting'];
+            currentTasks.forEach(id => {
+                if (localStorage.getItem(id) === 'done') {
+                    const item = document.getElementById(id);
+                    if (item) {
+                        item.classList.add('completed');
+                        const checkId = 'check-' + id.substring(5);
+                        const check = document.getElementById(checkId);
+                        if (check) check.classList.add('checked');
+                    }
+                }
+            });
+
+            // Calculate Clinical Rotation
+            const startDate = new Date(2026, 1, 23, 0, 0, 0); 
+            const today = new Date();
+            const diffMs = today.getTime() - startDate.getTime();
+            const dayCount = Math.floor(diffMs / (1000 * 60 * 60 * 24)) + 1;
+            const totalDays = 14;
+            const progressPercent = Math.min(Math.max((dayCount / totalDays) * 100, 0), 100);
+            
+            document.getElementById('rotation-bar').style.width = progressPercent + '%';
+            document.getElementById('rotation-stats').innerText = `DAY ${dayCount} / 14 // SYSTEM_NOMINAL`;
+        }
+    </script>
+</body>
+</html>
