@@ -1,0 +1,91 @@
+{
+  "company": "Pallidex Software Solutions Pvt Ltd",
+  "founder": "Prasannakalyan",
+  "milestone": {
+    "title": "Bhrungi Director Meeting",
+    "date": "2026-02-25",
+    "status": "Ready"
+  },
+  "beta_progress": 75,
+  "team": {
+    "Syed": "Backend - Auth Stable",
+    "Neethu": "Frontend - Pending Sync"
+  },
+  "backlog_pallidex": {
+    "important_urgent": [
+      "Demo by Weekend",
+      "Make PPT for Investors"
+    ],
+    "important_not_urgent": [
+      {
+        "text": "All Hands Review Meeting",
+        "deadline": "2026-02-26"
+      },
+      {
+        "text": "Complete Achievement Doc (Formatting)",
+        "deadline": "2026-02-27"
+      },
+      {
+        "text": "Bank Account Opening",
+        "deadline": "2026-03-05"
+      },
+      {
+        "text": "Website Development & Branding",
+        "deadline": "2026-03-10"
+      }
+    ],
+    "fun_low_priority": []
+  },
+  "backlog_personal": {
+    "important_urgent": [
+      "AI API Control"
+    ],
+    "important_not_urgent": [
+      {
+        "text": "OpenClaw Cron Jobs & Skills Setup",
+        "deadline": "2026-02-28"
+      },
+      {
+        "text": "Stock Market App",
+        "deadline": "2026-03-15"
+      },
+      {
+        "text": "The Odin Project",
+        "deadline": "Ongoing"
+      },
+      {
+        "text": "Set up LinkedIn",
+        "deadline": "TBD"
+      }
+    ],
+    "fun_low_priority": [
+      "Dashboard Updates",
+      "Studying App"
+    ]
+  },
+  "todo_today": [
+    {
+      "text": "Demo by Weekend",
+      "priority": "urgent",
+      "date_assigned": "2026-02-28",
+      "late": true
+    },
+    {
+      "text": "Make PPT for Investors",
+      "priority": "urgent",
+      "date_assigned": "2026-02-28",
+      "late": true
+    },
+    {
+      "text": "All Hands Review Meeting",
+      "priority": "wait",
+      "date_assigned": "2026-02-28",
+      "late": true
+    }
+  ],
+  "medical": {
+    "rotation": "ENT",
+    "shift": "08:00 - 18:00",
+    "notes": "Night Duties: Sunday (Mar 1), Tuesday (Mar 3)"
+  }
+}
